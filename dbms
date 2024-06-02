@@ -1,0 +1,1703 @@
+4. Implement the following Queries
+
+1. Create a collection named books.
+
+2. Insert 5 records with field TITLE, DESCRIPTION, BY URL TAGS AND LIKES
+
+3. Insert I more document in collection with additional field of user name and comments
+
+4. Display all the documents whose title is 'MySQL'.
+
+5. Display all the documents written by 'john' or whose title is 'mongodb 6. Display all the documents whose title is 'mongodb' and written by john
+
+7. Display all the documents whose like is greater than 10.
+
+8. Display all the documents whose like is greater than 100 and whose title is either 'mongodb' or written by 'john'
+
+9. Update the title of 'MySQL' document to 'MySQL overview
+
+10. Delete the document titled 'nosql overview.
+
+11. Display exactly two documents written by 'john'.
+
+12. Display the second document published by 'john'.
+
+13. Display all the books in the sorted fashion.    use mysql query to create table, insert data and do following queries
+
+
+-- 1. Create a collection named books.
+CREATE TABLE books (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    TITLE VARCHAR(255),
+    DESCRIPTION TEXT,
+    BY_AUTHOR VARCHAR(255),
+    URL VARCHAR(255),
+    TAGS VARCHAR(255),
+    LIKES INT
+);
+
+-- 2. Insert 5 records with field TITLE, DESCRIPTION, BY URL TAGS AND LIKES
+INSERT INTO books (TITLE, DESCRIPTION, BY_AUTHOR, URL, TAGS, LIKES) VALUES
+('MySQL', 'Introduction to MySQL database management system', 'John', 'https://example.com/mysql', 'database, SQL', 20),
+('MongoDB', 'Introduction to MongoDB NoSQL database', 'Jane', 'https://example.com/mongodb', 'database, NoSQL', 15),
+('Node.js', 'Introduction to Node.js for backend development', 'John', 'https://example.com/nodejs', 'Node.js, JavaScript', 12),
+('Python', 'Introduction to Python programming language', 'Alice', 'https://example.com/python', 'Python, Programming', 8),
+('React', 'Introduction to React.js for front-end development', 'Bob', 'https://example.com/react', 'React.js, JavaScript', 10);
+
+-- 3. Insert 1 more document in collection with additional field of user name and comments
+INSERT INTO books (TITLE, DESCRIPTION, BY_AUTHOR, URL, TAGS, LIKES, USER_NAME, COMMENTS) VALUES
+('MongoDB', 'MongoDB overview', 'Alice', 'https://example.com/mongodb', 'database, NoSQL', 25, 'Emma', 'Great overview of MongoDB.');
+
+-- 4. Display all the documents whose title is 'MySQL'.
+SELECT * FROM books WHERE TITLE = 'MySQL';
+
+-- 5. Display all the documents written by 'john' or whose title is 'mongodb'.
+SELECT * FROM books WHERE BY_AUTHOR = 'John' OR TITLE = 'MongoDB';
+
+-- 6. Display all the documents whose title is 'mongodb' and written by john.
+SELECT * FROM books WHERE TITLE = 'MongoDB' AND BY_AUTHOR = 'John';
+
+-- 7. Display all the documents whose like is greater than 10.
+SELECT * FROM books WHERE LIKES > 10;
+
+-- 8. Display all the documents whose like is greater than 100 and whose title is either 'mongodb' or written by 'john'.
+SELECT * FROM books WHERE (LIKES > 100) AND (TITLE = 'MongoDB' OR BY_AUTHOR = 'John');
+
+-- 9. Update the title of 'MySQL' document to 'MySQL overview'.
+UPDATE books SET TITLE = 'MySQL overview' WHERE TITLE = 'MySQL';
+
+-- 10. Delete the document titled 'nosql overview.
+DELETE FROM books WHERE TITLE = 'nosql overview';
+
+-- 11. Display exactly two documents written by 'john'.
+SELECT * FROM books WHERE BY_AUTHOR = 'John' LIMIT 2;
+
+-- 12. Display the second document published by 'john'.
+SELECT * FROM books WHERE BY_AUTHOR = 'John' LIMIT 1, 1;
+
+-- 13. Display all the books in the sorted fashion.
+SELECT * FROM books ORDER BY LIKES DESC;
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+13. A fish shop is selling approximately 100Kg fish daily, Shop is having 10 types of different fishes in the shop. Cost of each fish is different and it is per Kg. Shop man wants to keep following record.
+
+1. Quantity of fishes purchase each day, cost of purchase, transportation cost.
+
+2. Quantity of fishes sold per day and selling price
+
+3. Name and mobile number of person purchasing fish and types of fishes he purchases
+
+4. Find frequency of a person purchasing fishes
+
+5. Find daily sales amount and sales amount between given period
+
+6. If any person has purchased 5 times in a month and total cost of purchase is more than Rs 1000/- then given him discount of 10% for next 3 purchases in the same month
+
+7. If any person purchases SKg of costliest fish then he will be offered 1Kg of non- selling fish.
+
+8. List name of persons purchasing costliest fish 5 times in a month.
+
+9. List names of persons purchasing fishes 3 times in a month.
+
+10. List names of fishes which are sold every day and which are sold once in a month.
+
+
+
+-- 1. Creating the Database
+CREATE DATABASE FishShop;
+USE FishShop;
+
+-- 2. Creating Tables
+
+-- Table: Fish
+CREATE TABLE Fish (
+    FishID INT AUTO_INCREMENT PRIMARY KEY,
+    FishName VARCHAR(100),
+    CostPerKg DECIMAL(10, 2)
+);
+
+-- Table: DailyPurchase
+CREATE TABLE DailyPurchase (
+    PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
+    PurchaseDate DATE,
+    QuantityKg DECIMAL(10, 2),
+    CostOfPurchase DECIMAL(10, 2),
+    TransportationCost DECIMAL(10, 2)
+);
+
+-- Table: DailySale
+CREATE TABLE DailySale (
+    SaleID INT AUTO_INCREMENT PRIMARY KEY,
+    SaleDate DATE,
+    FishID INT,
+    QuantityKg DECIMAL(10, 2),
+    SellingPrice DECIMAL(10, 2),
+    FOREIGN KEY (FishID) REFERENCES Fish(FishID)
+);
+
+-- Table: Customer
+CREATE TABLE Customer (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    MobileNumber VARCHAR(15)
+);
+
+-- Table: CustomerPurchase
+CREATE TABLE CustomerPurchase (
+    PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    FishID INT,
+    QuantityKg DECIMAL(10, 2),
+    PurchaseDate DATE,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (FishID) REFERENCES Fish(FishID)
+);
+
+-- 3. Inserting Initial Data
+
+-- Insert into Fish
+INSERT INTO Fish (FishName, CostPerKg) VALUES 
+('Salmon', 500.00), 
+('Tuna', 400.00), 
+('Trout', 350.00), 
+('Mackerel', 300.00), 
+('Sardine', 200.00), 
+('Catfish', 150.00), 
+('Tilapia', 100.00), 
+('Bass', 450.00), 
+('Cod', 250.00), 
+('Herring', 220.00);
+
+-- Insert sample data into DailyPurchase
+INSERT INTO DailyPurchase (PurchaseDate, QuantityKg, CostOfPurchase, TransportationCost) VALUES
+('2023-05-01', 120.00, 36000.00, 2000.00),
+('2023-05-02', 110.00, 33000.00, 1800.00);
+
+-- Insert sample data into DailySale
+INSERT INTO DailySale (SaleDate, FishID, QuantityKg, SellingPrice) VALUES
+('2023-05-01', 1, 10.00, 6000.00),
+('2023-05-01', 2, 20.00, 8000.00);
+
+-- Insert sample data into Customer
+INSERT INTO Customer (Name, MobileNumber) VALUES
+('Alice', '555-1234'),
+('Bob', '555-5678');
+
+-- Insert sample data into CustomerPurchase
+INSERT INTO CustomerPurchase (CustomerID, FishID, QuantityKg, PurchaseDate) VALUES
+(1, 1, 5.00, '2023-05-01'),
+(1, 2, 3.00, '2023-05-01'),
+(2, 3, 10.00, '2023-05-02');
+
+-- 4. Queries for Specific Requirements
+
+-- 4.1 Quantity of fishes purchased each day, cost of purchase, transportation cost
+SELECT PurchaseDate, QuantityKg, CostOfPurchase, TransportationCost
+FROM DailyPurchase;
+
+-- 4.2 Quantity of fishes sold per day and selling price
+SELECT SaleDate, FishID, QuantityKg, SellingPrice
+FROM DailySale;
+
+-- 4.3 Name and mobile number of person purchasing fish and types of fishes he purchases
+SELECT c.Name, c.MobileNumber, f.FishName, cp.QuantityKg
+FROM Customer c
+JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+JOIN Fish f ON cp.FishID = f.FishID;
+
+-- 4.4 Find frequency of a person purchasing fishes
+SELECT c.Name, COUNT(cp.PurchaseID) AS PurchaseFrequency
+FROM Customer c
+JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+GROUP BY c.Name;
+
+-- 4.5 Find daily sales amount and sales amount between given period
+-- Daily sales amount
+SELECT SaleDate, SUM(SellingPrice * QuantityKg) AS DailySalesAmount
+FROM DailySale
+GROUP BY SaleDate;
+
+-- Sales amount between given period
+SELECT SUM(SellingPrice * QuantityKg) AS TotalSalesAmount
+FROM DailySale
+WHERE SaleDate BETWEEN '2023-05-01' AND '2023-05-31';
+
+-- 4.6 Discount for frequent purchasers
+-- Finding eligible customers
+SELECT c.CustomerID, c.Name, COUNT(cp.PurchaseID) AS PurchaseCount, SUM(f.CostPerKg * cp.QuantityKg) AS TotalPurchaseAmount
+FROM Customer c
+JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+JOIN Fish f ON cp.FishID = f.FishID
+WHERE cp.PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+GROUP BY c.CustomerID, c.Name
+HAVING COUNT(cp.PurchaseID) >= 5 AND SUM(f.CostPerKg * cp.QuantityKg) > 1000;
+
+-- Applying the discount
+UPDATE CustomerPurchase
+SET PurchasePrice = PurchasePrice * 0.9
+WHERE CustomerID IN (
+    SELECT c.CustomerID
+    FROM Customer c
+    JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+    JOIN Fish f ON cp.FishID = f.FishID
+    WHERE cp.PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+    GROUP BY c.CustomerID
+    HAVING COUNT(cp.PurchaseID) >= 5 AND SUM(f.CostPerKg * cp.QuantityKg) > 1000
+)
+AND PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+AND PurchaseID IN (
+    SELECT PurchaseID
+    FROM (
+        SELECT PurchaseID
+        FROM CustomerPurchase
+        WHERE CustomerID IN (
+            SELECT c.CustomerID
+            FROM Customer c
+            JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+            JOIN Fish f ON cp.FishID = f.FishID
+            WHERE cp.PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+            GROUP BY c.CustomerID
+            HAVING COUNT(cp.PurchaseID) >= 5 AND SUM(f.CostPerKg * cp.QuantityKg) > 1000
+        )
+        ORDER BY PurchaseDate DESC
+        LIMIT 3
+    ) AS Subquery
+);
+
+-- 4.7 If any person purchases 5Kg of costliest fish then he will be offered 1Kg of non-selling fish
+-- Assuming non-selling fish is identified (e.g., 'Herring')
+-- Finding costliest fish
+SELECT FishID, FishName, CostPerKg
+FROM Fish
+ORDER BY CostPerKg DESC
+LIMIT 1;
+
+-- Offering 1Kg of non-selling fish
+INSERT INTO CustomerPurchase (CustomerID, FishID, QuantityKg, PurchaseDate)
+SELECT cp.CustomerID, (SELECT FishID FROM Fish WHERE FishName = 'Herring'), 1.00, CURDATE()
+FROM CustomerPurchase cp
+JOIN Fish f ON cp.FishID = f.FishID
+WHERE f.CostPerKg = (SELECT MAX(CostPerKg) FROM Fish)
+AND cp.QuantityKg >= 5
+AND cp.PurchaseDate = CURDATE();
+
+-- 4.8 List name of persons purchasing costliest fish 5 times in a month
+SELECT c.Name
+FROM Customer c
+JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+JOIN Fish f ON cp.FishID = f.FishID
+WHERE f.CostPerKg = (SELECT MAX(CostPerKg) FROM Fish)
+AND cp.PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+GROUP BY c.Name
+HAVING COUNT(cp.PurchaseID) >= 5;
+
+-- 4.9 List names of persons purchasing fishes 3 times in a month
+SELECT c.Name
+FROM Customer c
+JOIN CustomerPurchase cp ON c.CustomerID = cp.CustomerID
+WHERE cp.PurchaseDate BETWEEN '2023-05-01' AND '2023-05-31'
+GROUP BY c.Name
+HAVING COUNT(cp.PurchaseID) >= 3;
+
+-- 4.10 List names of fishes which are sold every day and which are sold once in a month
+-- Fishes sold every day
+SELECT f.FishName
+FROM Fish f
+JOIN DailySale ds ON f.FishID = ds.FishID
+GROUP BY f.FishName
+HAVING COUNT(DISTINCT ds.SaleDate) = (SELECT COUNT(DISTINCT SaleDate) FROM DailySale);
+
+-- Fishes sold once in a month
+SELECT f.FishName
+FROM Fish f
+JOIN DailySale ds ON f.FishID = ds.FishID
+WHERE ds.SaleDate BETWEEN '2023-05-01' AND '2023-05-31'
+GROUP BY f.FishName
+HAVING COUNT(ds.SaleID) = 1;
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+14. A temple where around 1000 pilgrims visit every day wants to keep following record.
+
+1. Names, gender, phone numbers and state of the pilgrims.
+
+2. Names of pilgrims visited more than 10 times in given period. 3. If a pilgrim is visiting 10th time in a month then give him a silver coin.
+
+4. If a pilgrim is visiting 25th time in a year then give him gold coin.
+
+5. Prasad is also distributed to pilgrims as 25 rs per laddu if requested.
+
+6. Display number of pilgrims visiting per month and no. of laddus distributed.
+
+7. Display count of male and female pilgrims visited in given period.
+
+8. Display the revenue generated by selling laddus during specified period.
+
+9. Display state wise count of pilgrims visited temple during specified period. 
+10. Display count of silver and gold coins distributed in given period.
+
+
+-- 1. Creating the Database
+CREATE DATABASE Temple;
+USE Temple;
+
+-- 2. Creating Tables
+
+-- Table: Pilgrim
+CREATE TABLE Pilgrim (
+    PilgrimID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Gender ENUM('Male', 'Female'),
+    PhoneNumber VARCHAR(15),
+    State VARCHAR(100)
+);
+
+-- Table: Visit
+CREATE TABLE Visit (
+    VisitID INT AUTO_INCREMENT PRIMARY KEY,
+    PilgrimID INT,
+    VisitDate DATE,
+    LaddusRequested INT,
+    FOREIGN KEY (PilgrimID) REFERENCES Pilgrim(PilgrimID)
+);
+
+-- 3. Inserting Initial Data
+
+-- Insert sample data into Pilgrim
+INSERT INTO Pilgrim (Name, Gender, PhoneNumber, State) VALUES
+('Alice', 'Female', '555-1234', 'California'),
+('Bob', 'Male', '555-5678', 'Texas'),
+('Charlie', 'Male', '555-8765', 'New York');
+
+-- Insert sample data into Visit
+INSERT INTO Visit (PilgrimID, VisitDate, LaddusRequested) VALUES
+(1, '2023-05-01', 2),
+(1, '2023-05-02', 3),
+(2, '2023-05-01', 1),
+(3, '2023-05-03', 4),
+(1, '2023-05-03', 1),
+(2, '2023-05-03', 2),
+(3, '2023-05-04', 1);
+
+-- 4. Queries for Specific Requirements
+
+-- 4.1 Names, gender, phone numbers and state of the pilgrims
+SELECT Name, Gender, PhoneNumber, State
+FROM Pilgrim;
+
+-- 4.2 Names of pilgrims visited more than 10 times in given period
+SELECT p.Name
+FROM Pilgrim p
+JOIN Visit v ON p.PilgrimID = v.PilgrimID
+WHERE v.VisitDate BETWEEN '2023-01-01' AND '2023-12-31'
+GROUP BY p.Name
+HAVING COUNT(v.VisitID) > 10;
+
+-- 4.3 If a pilgrim is visiting 10th time in a month then give him a silver coin
+SELECT p.Name
+FROM Pilgrim p
+JOIN Visit v ON p.PilgrimID = v.PilgrimID
+WHERE MONTH(v.VisitDate) = 5 AND YEAR(v.VisitDate) = 2023
+GROUP BY p.Name
+HAVING COUNT(v.VisitID) = 10;
+
+-- 4.4 If a pilgrim is visiting 25th time in a year then give him gold coin
+SELECT p.Name
+FROM Pilgrim p
+JOIN Visit v ON p.PilgrimID = v.PilgrimID
+WHERE YEAR(v.VisitDate) = 2023
+GROUP BY p.Name
+HAVING COUNT(v.VisitID) = 25;
+
+-- 4.5 Prasad is also distributed to pilgrims as 25 rs per laddu if requested
+-- Cost is calculated during revenue calculation
+
+-- 4.6 Display number of pilgrims visiting per month and number of laddus distributed
+SELECT MONTH(VisitDate) AS Month, COUNT(DISTINCT PilgrimID) AS PilgrimCount, SUM(LaddusRequested) AS LaddusDistributed
+FROM Visit
+GROUP BY MONTH(VisitDate);
+
+-- 4.7 Display count of male and female pilgrims visited in given period
+SELECT Gender, COUNT(DISTINCT p.PilgrimID) AS Count
+FROM Pilgrim p
+JOIN Visit v ON p.PilgrimID = v.PilgrimID
+WHERE v.VisitDate BETWEEN '2023-01-01' AND '2023-12-31'
+GROUP BY Gender;
+
+-- 4.8 Display the revenue generated by selling laddus during specified period
+SELECT SUM(LaddusRequested * 25) AS Revenue
+FROM Visit
+WHERE VisitDate BETWEEN '2023-01-01' AND '2023-12-31';
+
+-- 4.9 Display state wise count of pilgrims visited temple during specified period
+SELECT p.State, COUNT(DISTINCT p.PilgrimID) AS Count
+FROM Pilgrim p
+JOIN Visit v ON p.PilgrimID = v.PilgrimID
+WHERE v.VisitDate BETWEEN '2023-01-01' AND '2023-12-31'
+GROUP BY p.State;
+
+-- 4.10 Display count of silver and gold coins distributed in given period
+-- Silver Coins
+SELECT COUNT(*) AS SilverCoins
+FROM (
+    SELECT p.PilgrimID
+    FROM Pilgrim p
+    JOIN Visit v ON p.PilgrimID = v.PilgrimID
+    WHERE MONTH(v.VisitDate) = 5 AND YEAR(v.VisitDate) = 2023
+    GROUP BY p.PilgrimID
+    HAVING COUNT(v.VisitID) = 10
+) AS Silver;
+
+-- Gold Coins
+SELECT COUNT(*) AS GoldCoins
+FROM (
+    SELECT p.PilgrimID
+    FROM Pilgrim p
+    JOIN Visit v ON p.PilgrimID = v.PilgrimID
+    WHERE YEAR(v.VisitDate) = 2023
+    GROUP BY p.PilgrimID
+    HAVING COUNT(v.VisitID) = 25
+) AS Gold;
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+16. A TV, Fridge, washing machine. Microwave selling shop wants to keep following information
+
+1. Name, mobile number, no. of persons in house of person purchasing any item
+
+2. If any person purchases 2 items then he will be given 5% discount on third item.
+
+3. Number of persons purchasing 2 items.
+
+4. List of combination of items purchased by people.
+
+5. Count of people purchasing 1.2.3 items.
+
+6. Count of people purchased microwave who are having more than 4 no, of Persons in house.
+
+7. Count of people purchased TV having 2 people in a house.
+
+8. No. of different items sold during given period.
+
+9. Sales amount collected per item during given period
+
+10. Revenue generated during given period.
+
+
+-- 1. Creating the Database
+CREATE DATABASE ApplianceShop;
+USE ApplianceShop;
+
+-- 2. Creating Tables
+
+-- Table: Customer
+CREATE TABLE Customer (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    MobileNumber VARCHAR(15),
+    PersonsInHouse INT
+);
+
+-- Table: Item
+CREATE TABLE Item (
+    ItemID INT AUTO_INCREMENT PRIMARY KEY,
+    ItemName VARCHAR(50),
+    Price DECIMAL(10, 2)
+);
+
+-- Table: Purchase
+CREATE TABLE Purchase (
+    PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    ItemID INT,
+    PurchaseDate DATE,
+    DiscountApplied BOOLEAN,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (ItemID) REFERENCES Item(ItemID)
+);
+
+-- 3. Inserting Initial Data
+
+-- Insert sample data into Item
+INSERT INTO Item (ItemName, Price) VALUES 
+('TV', 500.00), 
+('Fridge', 700.00), 
+('Washing Machine', 400.00), 
+('Microwave', 200.00);
+
+-- 4. Queries for Specific Requirements
+
+-- 4.1 Name, mobile number, no. of persons in house of person purchasing any item
+SELECT c.Name, c.MobileNumber, c.PersonsInHouse
+FROM Customer c
+JOIN Purchase p ON c.CustomerID = p.CustomerID;
+
+-- 4.2 If any person purchases 2 items then he will be given 5% discount on third item
+UPDATE Purchase
+SET DiscountApplied = TRUE
+WHERE CustomerID IN (
+    SELECT CustomerID
+    FROM (
+        SELECT CustomerID
+        FROM Purchase
+        WHERE DiscountApplied = FALSE
+        GROUP BY CustomerID
+        HAVING COUNT(ItemID) >= 2
+    ) AS T
+) AND DiscountApplied = FALSE;
+
+-- 4.3 Number of persons purchasing 2 items
+SELECT COUNT(DISTINCT CustomerID) AS NumOfPersonsPurchasingTwoItems
+FROM Purchase
+WHERE DiscountApplied = TRUE
+GROUP BY CustomerID
+HAVING COUNT(ItemID) = 2;
+
+-- 4.4 List of combination of items purchased by people
+SELECT GROUP_CONCAT(ItemName) AS Combination
+FROM Item
+JOIN Purchase ON Item.ItemID = Purchase.ItemID
+GROUP BY CustomerID;
+
+-- 4.5 Count of people purchasing 1, 2, 3 items
+SELECT COUNT(DISTINCT CustomerID) AS NumOfPersons, 
+       CASE 
+           WHEN COUNT(ItemID) = 1 THEN '1 item' 
+           WHEN COUNT(ItemID) = 2 THEN '2 items' 
+           WHEN COUNT(ItemID) = 3 THEN '3 items' 
+       END AS NumOfItems
+FROM Purchase
+GROUP BY NumOfItems;
+
+-- 4.6 Count of people purchased microwave who are having more than 4 no. of Persons in house
+SELECT COUNT(DISTINCT Purchase.CustomerID) AS NumOfPersons
+FROM Purchase
+JOIN Customer ON Purchase.CustomerID = Customer.CustomerID
+WHERE Purchase.ItemID = (SELECT ItemID FROM Item WHERE ItemName = 'Microwave')
+AND Customer.PersonsInHouse > 4;
+
+-- 4.7 Count of people purchased TV having 2 people in a house
+SELECT COUNT(DISTINCT Purchase.CustomerID) AS NumOfPersons
+FROM Purchase
+JOIN Customer ON Purchase.CustomerID = Customer.CustomerID
+WHERE Purchase.ItemID = (SELECT ItemID FROM Item WHERE ItemName = 'TV')
+AND Customer.PersonsInHouse = 2;
+
+
+-- 4.8 No. of different items sold during given period
+SELECT COUNT(DISTINCT ItemID) AS NumOfDifferentItemsSold
+FROM Purchase;
+
+-- 4.9 Sales amount collected per item during given period
+SELECT ItemName, SUM(Price) AS TotalSalesAmount
+FROM Item
+JOIN Purchase ON Item.ItemID = Purchase.ItemID
+GROUP BY ItemName;
+
+-- 4.10 Revenue generated during given period
+SELECT SUM(Price) AS RevenueGenerated
+FROM Item
+JOIN Purchase ON Item.ItemID = Purchase.ItemID;
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+28) Consider the following database
+
+Branch (branch-name, branch-city, assets)
+
+Customer (customer-name, customer-street, customer-city) Loan (loan-number, branch-name, amount)
+
+Borrower (customer-name, loan-number) Account (account-number, branch-name, balance)
+
+Depositor (customer-name, account-number)
+
+1. Create a trigger to check the validity of balance (should be between $90,000 and $100,000) before a row is inserted in the Account table.
+
+2. Create a trigger which does not allow any DML operation on the loan table for Perry-ridge branch.
+
+3. Display the customer names who have taken the loan
+
+4. Display the details of customer with branch name "Tilak road pune
+
+5. Display the Number of customers whose branch is borivali Mumbai
+
+
+
+-- 1. Creating Tables
+
+CREATE TABLE Branch (
+    branch_name VARCHAR(255) PRIMARY KEY,
+    branch_city VARCHAR(255),
+    assets DECIMAL(10, 2)
+);
+
+CREATE TABLE Customer (
+    customer_name VARCHAR(255) PRIMARY KEY,
+    customer_street VARCHAR(255),
+    customer_city VARCHAR(255)
+);
+
+CREATE TABLE Loan (
+    loan_number INT PRIMARY KEY,
+    branch_name VARCHAR(255),
+    amount DECIMAL(10, 2),
+    FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Borrower (
+    customer_name VARCHAR(255),
+    loan_number INT,
+    PRIMARY KEY (customer_name, loan_number),
+    FOREIGN KEY (customer_name) REFERENCES Customer(customer_name),
+    FOREIGN KEY (loan_number) REFERENCES Loan(loan_number)
+);
+
+CREATE TABLE Account (
+    account_number INT PRIMARY KEY,
+    branch_name VARCHAR(255),
+    balance DECIMAL(10, 2),
+    FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Depositor (
+    customer_name VARCHAR(255),
+    account_number INT,
+    PRIMARY KEY (customer_name, account_number),
+    FOREIGN KEY (customer_name) REFERENCES Customer(customer_name),
+    FOREIGN KEY (account_number) REFERENCES Account(account_number)
+);
+
+-- 2. Create trigger to check the validity of balance before a row is inserted in the Account table.
+DELIMITER //
+CREATE TRIGGER CheckBalanceValidity
+BEFORE INSERT ON Account
+FOR EACH ROW
+BEGIN
+    IF NEW.balance < 90000 OR NEW.balance > 100000 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Balance should be between $90,000 and $100,000';
+    END IF;
+END //
+DELIMITER ;
+
+-- 3. Create trigger to disallow DML operations on the loan table for Perry-ridge branch.
+DELIMITER //
+CREATE TRIGGER PreventLoanOperations
+BEFORE INSERT ON Loan
+FOR EACH ROW
+BEGIN
+    DECLARE branchName VARCHAR(255);
+    SELECT branch_name INTO branchName FROM Branch WHERE branch_name = NEW.branch_name;
+    IF branchName = 'Perry-ridge' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'DML operations not allowed on the loan table for Perry-ridge branch';
+    END IF;
+END //
+DELIMITER ;
+
+-- 4. Sample Data Insertion
+INSERT INTO Branch (branch_name, branch_city, assets) VALUES
+('Perry-ridge', 'New York', 150000),
+('Tilak road pune', 'Pune', 200000),
+('Borivali', 'Mumbai', 180000);
+
+INSERT INTO Customer (customer_name, customer_street, customer_city) VALUES
+('John Doe', '123 Main St', 'New York'),
+('Jane Smith', '456 Elm St', 'Pune'),
+('Alice Johnson', '789 Oak St', 'Mumbai');
+
+INSERT INTO Loan (loan_number, branch_name, amount) VALUES
+(1, 'Perry-ridge', 50000),
+(2, 'Tilak road pune', 70000),
+(3, 'Borivali', 60000);
+
+INSERT INTO Borrower (customer_name, loan_number) VALUES
+('John Doe', 1),
+('Jane Smith', 2),
+('Alice Johnson', 3);
+
+INSERT INTO Account (account_number, branch_name, balance) VALUES
+(101, 'Perry-ridge', 95000),
+(102, 'Tilak road pune', 98000),
+(103, 'Borivali', 100000);
+
+INSERT INTO Depositor (customer_name, account_number) VALUES
+('John Doe', 101),
+('Jane Smith', 102),
+('Alice Johnson', 103);
+
+-- 5. Display customer names who have taken the loan.
+SELECT DISTINCT customer_name
+FROM Borrower;
+
+-- 6. Display details of customers with branch name "Tilak road pune".
+SELECT c.*
+FROM Customer c
+JOIN Borrower b ON c.customer_name = b.customer_name
+JOIN Loan l ON b.loan_number = l.loan_number
+WHERE l.branch_name = 'Tilak road pune';
+
+-- 7. Display the number of customers whose branch is Borivali Mumbai.
+SELECT COUNT(DISTINCT customer_name) AS NumCustomers
+FROM Borrower b
+JOIN Loan l ON b.loan_number = l.loan_number
+JOIN Branch br ON l.branch_name = br.branch_name
+WHERE l.branch_name = 'Borivali' AND br.branch_city = 'Mumbai';
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+23) Consider the following DB
+Emp(ename.street,city)
+Workstenmac.cname.sal)
+Company(cname.city)
+Managertename,mname)
+
+Implement the following SQL queries
+
+1.Find all companies located in every city in which company "FBC" is located.
+
+2. List all managers in of "FBC' a 10% raise unless the salary become greater than Rs 10 lakhs in such cases give only 2.5% raise.
+
+3.Find those companies whose employees earn a higher salary, on average, than the 
+average salary at FBC 
+
+4.Find all the employees who work in companies located in "Pune
+
+5. Create a view which will display the all the information of manager, the company they work in.
+
+6. Create a trigger which will update the salary of all employees other than manager with 8 % of their salary and for manager 9% of their salary.
+
+
+-- 1. Creating Tables
+
+-- Table: Emp
+CREATE TABLE Emp (
+    ename VARCHAR(100),
+    street VARCHAR(100),
+    city VARCHAR(100),
+    sal DECIMAL(10, 2),
+    tename VARCHAR(100)
+);
+
+-- Table: Work
+CREATE TABLE Work (
+    cname VARCHAR(100),
+    sal DECIMAL(10, 2)
+);
+
+-- Table: Company
+CREATE TABLE Company (
+    cname VARCHAR(100),
+    city VARCHAR(100)
+);
+
+-- Table: Manager
+CREATE TABLE Manager (
+    tename VARCHAR(100),
+    mname VARCHAR(100),
+    sal DECIMAL(10, 2)
+);
+
+-- 2. Inserting Sample Data
+
+-- Insert sample data into Emp
+INSERT INTO Emp (ename, street, city, sal, tename) VALUES 
+('Emp1', 'Street1', 'Pune', 50000.00, 'Manager1'),
+('Emp2', 'Street2', 'Mumbai', 60000.00, 'Manager1'),
+('Emp3', 'Street3', 'Pune', 70000.00, 'Manager2');
+
+-- Insert sample data into Work
+INSERT INTO Work (cname, sal) VALUES 
+('FBC', 80000.00),
+('XYZ', 90000.00),
+('ABC', 100000.00);
+
+-- Insert sample data into Company
+INSERT INTO Company (cname, city) VALUES 
+('FBC', 'Pune'),
+('XYZ', 'Mumbai'),
+('ABC', 'Pune');
+
+-- Insert sample data into Manager
+INSERT INTO Manager (tename, mname, sal) VALUES 
+('Manager1', 'ManagerA', 120000.00),
+('Manager2', 'ManagerB', 130000.00);
+
+
+-- 1. Find all companies located in every city in which company "FBC" is located.
+SELECT cname
+FROM Company
+WHERE city IN (
+    SELECT city
+    FROM Company
+    WHERE cname = 'FBC'
+);
+
+-- 3. Find those companies whose employees earn a higher salary, on average, than the average salary at FBC.
+SELECT c.cname
+FROM Company AS c
+JOIN Emp AS e ON c.city = e.city
+GROUP BY c.cname
+HAVING AVG(e.sal) > (
+    SELECT AVG(w.sal)
+    FROM Work AS w
+    JOIN Company AS c2 ON w.cname = c2.cname
+    WHERE c2.cname = 'FBC'
+);
+
+-- 4. Find all the employees who work in companies located in "Pune".
+SELECT ename
+FROM Emp
+WHERE city = 'Pune';
+
+-- 6. Create a trigger which will update the salary of all employees other than managers with 8% of their salary and for managers 9% of their salary.
+DELIMITER //
+CREATE TRIGGER UpdateSalary
+BEFORE UPDATE ON Emp
+FOR EACH ROW
+BEGIN
+    IF NEW.tename IS NULL THEN
+        SET NEW.sal = OLD.sal * 1.08;
+    ELSE
+        SET NEW.sal = OLD.sal * 1.09;
+    END IF;
+END//
+DELIMITER ;
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+28) Consider the following database
+
+Branch (branch-name, branch-city, assets)
+
+Customer (customer-name, customer-street, customer-city) Loan (loan-number, branch-name, amount)
+
+Borrower (customer-name, loan-number) Account (account-number, branch-name, balance)
+
+Depositor (customer-name, account-number)
+
+1. Create a trigger to check the validity of balance (should be between $90,000 and $100,000) before a row is inserted in the Account table.
+
+2. Create a trigger which does not allow any DML operation on the loan table for Perry-ridge branch.
+
+3. Display the customer names who have taken the loan
+
+4. Display the details of customer with branch name "Tilak road pune
+
+5. Display the Number of customers whose branch is borivali Mumbai
+
+
+
+-- 1. Creating Tables
+
+CREATE TABLE Branch (
+    branch_name VARCHAR(255) PRIMARY KEY,
+    branch_city VARCHAR(255),
+    assets DECIMAL(10, 2)
+);
+
+CREATE TABLE Customer (
+    customer_name VARCHAR(255) PRIMARY KEY,
+    customer_street VARCHAR(255),
+    customer_city VARCHAR(255)
+);
+
+CREATE TABLE Loan (
+    loan_number INT PRIMARY KEY,
+    branch_name VARCHAR(255),
+    amount DECIMAL(10, 2),
+    FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Borrower (
+    customer_name VARCHAR(255),
+    loan_number INT,
+    PRIMARY KEY (customer_name, loan_number),
+    FOREIGN KEY (customer_name) REFERENCES Customer(customer_name),
+    FOREIGN KEY (loan_number) REFERENCES Loan(loan_number)
+);
+
+CREATE TABLE Account (
+    account_number INT PRIMARY KEY,
+    branch_name VARCHAR(255),
+    balance DECIMAL(10, 2),
+    FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Depositor (
+    customer_name VARCHAR(255),
+    account_number INT,
+    PRIMARY KEY (customer_name, account_number),
+    FOREIGN KEY (customer_name) REFERENCES Customer(customer_name),
+    FOREIGN KEY (account_number) REFERENCES Account(account_number)
+);
+
+-- 2. Create trigger to check the validity of balance before a row is inserted in the Account table.
+DELIMITER //
+CREATE TRIGGER CheckBalanceValidity
+BEFORE INSERT ON Account
+FOR EACH ROW
+BEGIN
+    IF NEW.balance < 90000 OR NEW.balance > 100000 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Balance should be between $90,000 and $100,000';
+    END IF;
+END //
+DELIMITER ;
+
+-- 3. Create trigger to disallow DML operations on the loan table for Perry-ridge branch.
+DELIMITER //
+CREATE TRIGGER PreventLoanOperations
+BEFORE INSERT ON Loan
+FOR EACH ROW
+BEGIN
+    DECLARE branchName VARCHAR(255);
+    SELECT branch_name INTO branchName FROM Branch WHERE branch_name = NEW.branch_name;
+    IF branchName = 'Perry-ridge' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'DML operations not allowed on the loan table for Perry-ridge branch';
+    END IF;
+END //
+DELIMITER ;
+
+-- 4. Sample Data Insertion
+INSERT INTO Branch (branch_name, branch_city, assets) VALUES
+('Perry-ridge', 'New York', 150000),
+('Tilak road pune', 'Pune', 200000),
+('Borivali', 'Mumbai', 180000);
+
+INSERT INTO Customer (customer_name, customer_street, customer_city) VALUES
+('John Doe', '123 Main St', 'New York'),
+('Jane Smith', '456 Elm St', 'Pune'),
+('Alice Johnson', '789 Oak St', 'Mumbai');
+
+INSERT INTO Loan (loan_number, branch_name, amount) VALUES
+(1, 'Perry-ridge', 50000),
+(2, 'Tilak road pune', 70000),
+(3, 'Borivali', 60000);
+
+INSERT INTO Borrower (customer_name, loan_number) VALUES
+('John Doe', 1),
+('Jane Smith', 2),
+('Alice Johnson', 3);
+
+INSERT INTO Account (account_number, branch_name, balance) VALUES
+(101, 'Perry-ridge', 95000),
+(102, 'Tilak road pune', 98000),
+(103, 'Borivali', 100000);
+
+INSERT INTO Depositor (customer_name, account_number) VALUES
+('John Doe', 101),
+('Jane Smith', 102),
+('Alice Johnson', 103);
+
+-- 5. Display customer names who have taken the loan.
+SELECT DISTINCT customer_name
+FROM Borrower;
+
+-- 6. Display details of customers with branch name "Tilak road pune".
+SELECT c.*
+FROM Customer c
+JOIN Borrower b ON c.customer_name = b.customer_name
+JOIN Loan l ON b.loan_number = l.loan_number
+WHERE l.branch_name = 'Tilak road pune';
+
+-- 7. Display the number of customers whose branch is Borivali Mumbai.
+SELECT COUNT(DISTINCT customer_name) AS NumCustomers
+FROM Borrower b
+JOIN Loan l ON b.loan_number = l.loan_number
+JOIN Branch br ON l.branch_name = br.branch_name
+WHERE l.branch_name = 'Borivali' AND br.branch_city = 'Mumbai';
+
+
+
+
+
+
+CREATE TABLE dept (
+    dept_no INT PRIMARY KEY,
+    dname VARCHAR(100),
+    loc VARCHAR(100),
+    mgrcode INT
+);
+
+CREATE TABLE emp (
+    emp_no INT PRIMARY KEY,
+    ename VARCHAR(100),
+    designation VARCHAR(100)
+);
+
+CREATE TABLE project (
+    proj_no INT PRIMARY KEY,
+    proj_name VARCHAR(100),
+    status VARCHAR(100)
+);
+
+
+
+-- Inserting into dept table
+INSERT INTO dept (dept_no, dname, loc, mgrcode)
+VALUES 
+(1, 'INVENTORY', 'PUNE', 101),
+(2, 'MARKETING', 'MUMBAI', 102),
+(3, 'COMPUTER', 'BANGALORE', 103);
+
+-- Inserting into emp table
+INSERT INTO emp (emp_no, ename, designation)
+VALUES 
+(101, 'John Doe', 'Manager'),
+(102, 'Alice Smith', 'Assistant Manager'),
+(103, 'Bob Johnson', 'Developer'),
+(104, 'Emma Brown', 'Manager'),
+(105, 'Michael Clark', 'Developer');
+
+-- Inserting into project table
+INSERT INTO project (proj_no, proj_name, status)
+VALUES 
+(1, 'Blood Bank', 'Complete'),
+(2, 'Database Migration', 'Incomplete'),
+(3, 'Website Redesign', 'Complete');
+
+-- Assigning employees to projects
+UPDATE project SET proj_no = 101 WHERE proj_name = 'Blood Bank'; -- John Doe is working on 'Blood Bank'
+UPDATE project SET proj_no = 104 WHERE proj_name = 'Database Migration'; -- Emma Brown is working on 'Database Migration'
+UPDATE project SET proj_no = 105 WHERE proj_name = 'Database Migration'; -- Michael Clark is also working on 'Database Migration'
+
+
+
+
+-- 1. List all employees of 'INVENTORY' department of 'PUNE' location.
+SELECT e.ename
+FROM emp e
+JOIN dept d ON e.emp_no = d.mgrcode
+WHERE d.dname = 'INVENTORY' AND d.loc = 'PUNE';
+
+-- 2. Give the names of employees who are working on 'Blood Bank' project.
+SELECT e.ename
+FROM emp e
+JOIN project p ON e.emp_no = p.proj_no
+WHERE p.proj_name = 'Blood Bank';
+
+-- 3. Given the name of managers from "MARKETING" department.
+SELECT e.ename
+FROM emp e
+JOIN dept d ON e.emp_no = d.mgrcode
+WHERE d.dname = 'MARKETING';
+
+-- 4. Give all the employees working under status "Incomplete" projects.
+SELECT e.ename
+FROM emp e
+JOIN project p ON e.emp_no = p.proj_no
+WHERE p.status = 'Incomplete';
+
+-- 5. Write a trigger before insert on emp table to auto insert the record and also update the dept table.
+DELIMITER //
+CREATE TRIGGER insert_emp_dept_trigger
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    DECLARE mgr_dept_no INT;
+    SELECT dept_no INTO mgr_dept_no FROM dept WHERE mgrcode = NEW.emp_no;
+    INSERT INTO dept (dept_no, dname, loc, mgrcode) VALUES (NEW.emp_no, NEW.ename, 'New Location', NULL);
+    UPDATE dept SET mgrcode = NEW.emp_no WHERE dept_no = mgr_dept_no;
+END //
+DELIMITER ;
+
+-- Inserting a new employee record
+INSERT INTO emp (emp_no, ename, designation) VALUES (106, 'Sarah Green', 'Analyst');
+
+
+SELECT * FROM dept;
+
+
+-- 6. Write a view to display all the employees in the "COMPUTER" Department.
+CREATE VIEW computer_department_employees AS
+SELECT e.ename, e.designation
+FROM emp e
+JOIN dept d ON e.emp_no = d.mgrcode
+WHERE d.dname = 'COMPUTER';
+
+SELECT * FROM computer_department_employees;
+
+
+
+
+
+
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    distance_from_school FLOAT,
+    house_type ENUM('Own', 'Rental')
+);
+
+CREATE TABLE Parents (
+    parent_id INT PRIMARY KEY,
+    student_id INT,
+    working_status ENUM('Working', 'Not Working'),
+    organization_type VARCHAR(100),
+    relationship ENUM('Father', 'Mother'),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id)
+);
+
+
+
+
+-- Inserting into Students table
+INSERT INTO Students (student_id, name, distance_from_school, house_type)
+VALUES 
+(1, 'John Doe', 5.3, 'Own'),
+(2, 'Alice Smith', 7.1, 'Rental'),
+(3, 'Bob Johnson', 3.5, 'Own'),
+(4, 'Emma Brown', 6.2, 'Rental'),
+(5, 'Michael Clark', 4.8, 'Own');
+
+-- Inserting into Parents table
+INSERT INTO Parents (parent_id, student_id, working_status, organization_type, relationship)
+VALUES 
+(101, 1, 'Working', 'Private', 'Father'),
+(102, 1, 'Working', 'Government', 'Mother'),
+(103, 2, 'Not Working', NULL, 'Father'),
+(104, 2, 'Working', 'Private', 'Mother'),
+(105, 3, 'Working', 'Government', 'Father'),
+(106, 3, 'Not Working', NULL, 'Mother'),
+(107, 4, 'Working', 'Private', 'Father'),
+(108, 4, 'Working', 'Private', 'Mother'),
+(109, 5, 'Not Working', NULL, 'Father'),
+(110, 5, 'Not Working', NULL, 'Mother');
+
+
+
+
+
+-- 3. Count of students whose one parent working and both parents working
+SELECT 
+    SUM(CASE WHEN parent_count = 1 THEN 1 ELSE 0 END) AS one_parent_working_count,
+    SUM(CASE WHEN parent_count = 2 THEN 1 ELSE 0 END) AS both_parents_working_count
+FROM (
+    SELECT student_id, COUNT(*) AS parent_count
+    FROM Parents
+    GROUP BY student_id
+) AS parent_counts;
+
+
+
+
+-- 4. Count of students living in own house and rental
+SELECT 
+    SUM(CASE WHEN house_type = 'Own' THEN 1 ELSE 0 END) AS own_house_count,
+    SUM(CASE WHEN house_type = 'Rental' THEN 1 ELSE 0 END) AS rental_house_count
+FROM Students;
+
+
+
+-- 6. Count of students whose father and mother type of organization is same
+SELECT COUNT(*)
+FROM (
+    SELECT student_id
+    FROM Parents
+    GROUP BY student_id
+    HAVING COUNT(DISTINCT organization_type) = 1
+) AS same_organization_count;
+
+
+
+-- 7. Count of students according to their distances from school
+SELECT 
+    FLOOR(distance_from_school) AS distance,
+    COUNT(*) AS student_count
+FROM Students
+GROUP BY FLOOR(distance_from_school);
+
+
+
+
+-- 8. Name of students whose mother is working and name of students whose father is working. List name if it is coming more than once.
+SELECT name
+FROM (
+    SELECT s.name, COUNT(*) AS count
+    FROM Students s
+    JOIN Parents p ON s.student_id = p.student_id
+    WHERE (p.relationship = 'Mother' AND p.working_status = 'Working')
+        OR (p.relationship = 'Father' AND p.working_status = 'Working')
+    GROUP BY s.name
+    HAVING COUNT(DISTINCT p.relationship) > 1
+) AS duplicate_names;
+
+
+
+
+
+CREATE TABLE Customer (
+    cust_no INT PRIMARY KEY,
+    cname VARCHAR(100),
+    city VARCHAR(100)
+);
+
+CREATE TABLE orders (
+    order_no INT PRIMARY KEY,
+    odate DATE,
+    cust_no INT,
+    ord_amt DECIMAL(10,2)
+);
+
+CREATE TABLE order_item (
+    order_no INT,
+    item_no INT,
+    Qty INT,
+    PRIMARY KEY (order_no, item_no)
+);
+
+CREATE TABLE item (
+    item_no INT PRIMARY KEY,
+    unit_price DECIMAL(10,2)
+);
+
+CREATE TABLE shipment (
+    order_no INT,
+    warehouse_no INT,
+    ship_date DATE,
+    PRIMARY KEY (order_no, warehouse_no)
+);
+
+CREATE TABLE warehouse (
+    warehouse_no INT PRIMARY KEY,
+    city VARCHAR(100)
+);
+
+
+
+
+-- Inserting into Customer table
+INSERT INTO Customer (cust_no, cname, city)
+VALUES 
+(1, 'Jose Lopez', 'New York'),
+(2, 'Maria Rodriguez', 'Los Angeles'),
+(3, 'Juan Martinez', 'Chicago'),
+(4, 'Ana Garcia', 'Houston'),
+(5, 'Pedro Hernandez', 'New York');
+
+-- Inserting into orders table
+INSERT INTO orders (order_no, odate, cust_no, ord_amt)
+VALUES 
+(101, '2024-05-01', 1, 100.00),
+(102, '2024-05-10', 2, 150.00),
+(103, '2024-05-20', 3, 200.00),
+(104, '2024-05-25', 1, 120.00),
+(105, '2024-06-05', 2, 180.00);
+
+-- Inserting into order_item table
+INSERT INTO order_item (order_no, item_no, Qty)
+VALUES 
+(101, 1, 2),
+(102, 2, 3),
+(103, 1, 1),
+(104, 3, 2),
+(105, 2, 4);
+
+-- Inserting into item table
+INSERT INTO item (item_no, unit_price)
+VALUES 
+(1, 10.00),
+(2, 15.00),
+(3, 20.00),
+(4, 25.00),
+(5, 30.00);
+
+-- Inserting into shipment table
+INSERT INTO shipment (order_no, warehouse_no, ship_date)
+VALUES 
+(101, 1, '2024-05-05'),
+(102, 2, '2024-05-15'),
+(103, 3, '2024-05-25'),
+(104, 1, '2024-06-01'),
+(105, 2, '2024-06-10');
+
+-- Inserting into warehouse table
+INSERT INTO warehouse (warehouse_no, city)
+VALUES 
+(1, 'New York'),
+(2, 'Los Angeles'),
+(3, 'Chicago'),
+(4, 'Houston'),
+(5, 'Dallas');
+
+
+
+
+-- 1. List the order # and ship_date for all orders shipped from warehouse number W2.
+SELECT s.order_no, s.ship_date
+FROM shipment s
+WHERE s.warehouse_no = 2;
+
+-- 2. List the warehouse information from which the customer named 'Jose Lopez' was shipped his order.
+SELECT w.*
+FROM warehouse w
+JOIN shipment s ON w.warehouse_no = s.warehouse_no
+JOIN orders o ON s.order_no = o.order_no
+JOIN Customer c ON o.cust_no = c.cust_no
+WHERE c.cname = 'Jose Lopez';
+
+-- 3. List the orders that were not shipped within 30 days of ordering.
+SELECT o.*
+FROM orders o
+LEFT JOIN shipment s ON o.order_no = s.order_no
+WHERE s.ship_date IS NULL OR DATEDIFF(s.ship_date, o.odate) > 30;
+
+-- 4. List the order # for orders that were shipped from all warehouses that the company has in New York.
+SELECT o.order_no
+FROM orders o
+JOIN shipment s ON o.order_no = s.order_no
+WHERE s.warehouse_no IN (SELECT w.warehouse_no FROM warehouse w WHERE w.city = 'New York')
+GROUP BY o.order_no
+HAVING COUNT(DISTINCT s.warehouse_no) = (SELECT COUNT(*) FROM warehouse WHERE city = 'New York');
+
+-- 5. Write a cursor to extract order details.
+DELIMITER //
+CREATE PROCEDURE order_details()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE order_number INT;
+    DECLARE ship_date DATE;
+    
+    DECLARE cur CURSOR FOR SELECT order_no, ship_date FROM shipment;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO order_number, ship_date;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SELECT * FROM orders WHERE order_no = order_number;
+        SELECT * FROM order_item WHERE order_no = order_number;
+    END LOOP;
+
+    CLOSE cur;
+END //
+DELIMITER ;
+
+CALL order_details();
+
+
+
+
+
+
+CREATE TABLE Distributor (
+    distributor_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    mobile_number VARCHAR(15),
+    email VARCHAR(100),
+    state VARCHAR(100),
+    city VARCHAR(100)
+);
+
+CREATE TABLE OrderDetails (
+    order_id INT PRIMARY KEY,
+    distributor_id INT,
+    mobiles_ordered INT,
+    deposit_amount DECIMAL(10, 2),
+    total_amount DECIMAL(10, 2),
+    FOREIGN KEY (distributor_id) REFERENCES Distributor(distributor_id)
+);
+
+CREATE TABLE Model (
+    model_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE OrderItems (
+    order_id INT,
+    model_id INT,
+    quantity INT,
+    PRIMARY KEY (order_id, model_id),
+    FOREIGN KEY (order_id) REFERENCES OrderDetails(order_id),
+    FOREIGN KEY (model_id) REFERENCES Model(model_id)
+);
+
+
+
+
+-- Inserting into Distributor table
+INSERT INTO Distributor (distributor_id, name, mobile_number, email, state, city)
+VALUES 
+(1, 'ABC Distributors', '9876543210', 'abc@example.com', 'California', 'Los Angeles'),
+(2, 'XYZ Traders', '1234567890', 'xyz@example.com', 'New York', 'New York'),
+(3, 'PQR Enterprises', '4567890123', 'pqr@example.com', 'Texas', 'Houston'),
+(4, 'LMN Wholesalers', '7890123456', 'lmn@example.com', 'Florida', 'Miami'),
+(5, 'EFG Suppliers', '2345678901', 'efg@example.com', 'California', 'San Francisco');
+
+-- Inserting into OrderDetails table
+INSERT INTO OrderDetails (order_id, distributor_id, mobiles_ordered, deposit_amount, total_amount)
+VALUES 
+(101, 1, 800, 80000.00, 80000.00),
+(102, 2, 1500, 150000.00, 142700.00),
+(103, 3, 300, 30000.00, 30000.00),
+(104, 4, 1200, 120000.00, 120000.00),
+(105, 5, 250, 25000.00, 25000.00);
+
+-- Inserting into Model table
+INSERT INTO Model (model_id, name, price)
+VALUES 
+(1, 'Model X', 100.00),
+(2, 'Model Y', 150.00),
+(3, 'Model Z', 200.00),
+(4, 'Model A', 80.00),
+(5, 'Model B', 120.00);
+
+-- Inserting into OrderItems table
+INSERT INTO OrderItems (order_id, model_id, quantity)
+VALUES 
+(101, 1, 200),
+(101, 2, 300),
+(102, 3, 500),
+(102, 4, 200),
+(103, 1, 100),
+(104, 2, 800),
+(104, 5, 400),
+(105, 3, 150),
+(105, 4, 100),
+(105, 5, 50);
+
+
+
+-- 2. Number of mobiles ordered by distributor
+SELECT distributor_id, SUM(mobiles_ordered) AS total_mobiles_ordered
+FROM OrderDetails
+GROUP BY distributor_id;
+
+-- 3. Distributors eligible for credit
+SELECT distributor_id
+FROM OrderDetails
+WHERE mobiles_ordered >= 1000 AND deposit_amount >= total_amount;
+
+-- 4. Distributors eligible for discount
+SELECT distributor_id
+FROM OrderDetails
+WHERE total_amount > 100000;
+
+-- 5. Count of distributors in each state, city
+SELECT state, city, COUNT(*) AS distributor_count
+FROM Distributor
+GROUP BY state, city;
+
+-- 6. Revenue generated from each distributor
+SELECT distributor_id, SUM(total_amount) AS revenue_generated
+FROM OrderDetails
+GROUP BY distributor_id;
+
+-- 7. Revenue generated from each state, city
+SELECT d.state, d.city, SUM(od.total_amount) AS revenue_generated
+FROM Distributor d
+JOIN OrderDetails od ON d.distributor_id = od.distributor_id
+GROUP BY d.state, d.city;
+
+
+---8
+SELECT od.distributor_id, GROUP_CONCAT(m.name ORDER BY m.name SEPARATOR ', ') AS ordered_models
+FROM OrderItems oi
+JOIN OrderDetails od ON oi.order_id = od.order_id
+JOIN Model m ON oi.model_id = m.model_id
+GROUP BY od.distributor_id;
+
+
+--9
+SELECT od.distributor_id, COUNT(*) AS model_count
+FROM OrderItems oi
+JOIN OrderDetails od ON oi.order_id = od.order_id
+GROUP BY od.distributor_id;
+
+
+
+--10
+SELECT m.name AS model_name, d.name AS distributor_name
+FROM OrderItems oi
+JOIN OrderDetails od ON oi.order_id = od.order_id
+JOIN Distributor d ON od.distributor_id = d.distributor_id
+JOIN Model m ON oi.model_id = m.model_id;
+
+
+
+
+
+
+
+
+CREATE TABLE Customer (
+    cust_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    mobile VARCHAR(15)
+);
+
+CREATE TABLE Book (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(100),
+    category ENUM('Biographic', 'Cultural', 'Historical', 'Cooking', 'Kids'),
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE Purchase (
+    purchase_id INT PRIMARY KEY,
+    cust_id INT,
+    book_id INT,
+    quantity INT,
+    FOREIGN KEY (cust_id) REFERENCES Customer(cust_id),
+    FOREIGN KEY (book_id) REFERENCES Book(book_id)
+);
+
+
+
+-- Inserting into Customer table
+INSERT INTO Customer (cust_id, name, mobile)
+VALUES 
+(1, 'John Doe', '1234567890'),
+(2, 'Alice Smith', '9876543210'),
+(3, 'Bob Johnson', '8765432109'),
+(4, 'Emma Brown', '2345678901'),
+(5, 'Michael Clark', '3456789012');
+
+-- Inserting into Book table
+INSERT INTO Book (book_id, title, category, price)
+VALUES 
+(1, 'Biography of Einstein', 'Biographic', 20.00),
+(2, 'Cultural Heritage', 'Cultural', 15.00),
+(3, 'World History', 'Historical', 25.00),
+(4, 'Cooking Recipes', 'Cooking', 18.00),
+(5, 'Kids Bedtime Stories', 'Kids', 12.00);
+
+-- Inserting into Purchase table
+INSERT INTO Purchase (purchase_id, cust_id, book_id, quantity)
+VALUES 
+(101, 1, 1, 2),
+(102, 1, 3, 1),
+(103, 1, 4, 2),
+(104, 2, 2, 3),
+(105, 2, 3, 1),
+(106, 2, 5, 2),
+(107, 3, 3, 2),
+(108, 3, 5, 1),
+(109, 4, 4, 3),
+(110, 5, 1, 1),
+(111, 5, 2, 2),
+(112, 5, 4, 1),
+(113, 5, 5, 2);
+
+
+
+
+-- 2. List names of persons and categories of books they purchased and total cost.
+SELECT c.name, b.category, SUM(b.price * p.quantity) AS total_cost
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+JOIN Book b ON p.book_id = b.book_id
+GROUP BY c.name, b.category;
+
+-- 3. If a person purchases books of Rs. 5000/- then he is allowed to purchase additional books of Rs. 1000/-
+SELECT c.name, SUM(b.price * p.quantity) AS total_cost,
+    CASE 
+        WHEN SUM(b.price * p.quantity) >= 5000 THEN 'Allowed additional purchase of Rs. 1000'
+        ELSE 'Not eligible for additional purchase'
+    END AS additional_purchase
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+JOIN Book b ON p.book_id = b.book_id
+GROUP BY c.name;
+
+-- 4. List of persons who purchased books more than Rs. 5000/-
+SELECT c.name, SUM(b.price * p.quantity) AS total_cost
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+JOIN Book b ON p.book_id = b.book_id
+GROUP BY c.name
+HAVING total_cost > 5000;
+
+
+
+-- 5. Name of person who purchased minimum amount of books and a name of person who purchased maximum amount of books.
+SELECT 
+    MIN(c.name) AS min_purchase_person,
+    MAX(c.name) AS max_purchase_person
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+JOIN Book b ON p.book_id = b.book_id
+GROUP BY c.name
+ORDER BY SUM(b.price * p.quantity);
+
+-- 6. Total sell (count of books and amount) during given period.
+SELECT 
+    COUNT(*) AS total_books_sold,
+    SUM(b.price * p.quantity) AS total_amount_sold
+FROM Purchase p
+JOIN Book b ON p.book_id = b.book_id;
+
+-- 7. Count of books sold in each category.
+SELECT 
+    b.category,
+    SUM(p.quantity) AS books_sold
+FROM Purchase p
+JOIN Book b ON p.book_id = b.book_id
+GROUP BY b.category;
+
+-- 8. Count of persons who purchased books of cost more than Rs. 3000/-.
+SELECT 
+    COUNT(DISTINCT c.name) AS persons_purchased_above_3000
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+JOIN Book b ON p.book_id = b.book_id
+WHERE b.price * p.quantity > 3000;
+
+
+-- 9. List names of persons who purchased books more than 3 times in a given period.
+SELECT 
+    c.name
+FROM Customer c
+JOIN Purchase p ON c.cust_id = p.cust_id
+GROUP BY c.name
+HAVING COUNT(*) > 3;
+
+
+-- 10. List of different books purchased during given period.
+SELECT DISTINCT 
+    b.title,
+    b.category
+FROM Book b
+JOIN Purchase p ON b.book_id = p.book_id;
+
+
+
+
+
+
